@@ -152,7 +152,7 @@ export function Home() {
                 </div>
                 <div>
                   <p className="text-sm text-gray-500 font-medium">Expert Care</p>
-                  <p className="text-lg font-bold text-gray-900">Compassionate Support</p>
+                  <p className="text-lg font-bold text-gray-900">Compassionate Supports</p>
                 </div>
               </div>
             </motion.div>
