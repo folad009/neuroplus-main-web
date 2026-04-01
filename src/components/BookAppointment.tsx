@@ -1,7 +1,50 @@
 import { motion } from 'motion/react';
+import type { FormEvent } from 'react';
 import { Calendar, Clock, User, Phone, Mail, FileText } from 'lucide-react';
 
+const BOOKING_EMAIL = 'info@neuroplusng.com';
+const WHATSAPP_NUMBER = '2348133214931';
+
 export function BookAppointment() {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const form = event.currentTarget;
+    const formData = new FormData(form);
+
+    const firstName = String(formData.get('firstName') ?? '').trim();
+    const lastName = String(formData.get('lastName') ?? '').trim();
+    const email = String(formData.get('email') ?? '').trim();
+    const phone = String(formData.get('phone') ?? '').trim();
+    const date = String(formData.get('date') ?? '').trim();
+    const time = String(formData.get('time') ?? '').trim();
+    const service = String(formData.get('service') ?? '').trim();
+    const notes = String(formData.get('notes') ?? '').trim();
+
+    const messageLines = [
+      'New Appointment Request',
+      '',
+      `Name: ${firstName} ${lastName}`,
+      `Email: ${email}`,
+      `Phone: ${phone}`,
+      `Preferred Date: ${date}`,
+      `Preferred Time: ${time}`,
+      `Service Required: ${service}`,
+      `Additional Notes: ${notes || 'N/A'}`,
+    ];
+
+    const message = messageLines.join('\n');
+    const subject = `Appointment Request - ${firstName} ${lastName}`.trim();
+
+    const emailUrl = `mailto:${BOOKING_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
+
+    window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+    window.location.href = emailUrl;
+
+    form.reset();
+  };
+
   return (
     <section className="pt-32 pb-24 bg-gray-50 min-h-screen">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -21,7 +64,7 @@ export function BookAppointment() {
             </div>
           </div>
 
-          <form className="space-y-6" onSubmit={(e) => e.preventDefault()}>
+          <form className="space-y-6" onSubmit={handleSubmit}>
             <div className="grid sm:grid-cols-2 gap-6">
               <div>
                 <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">First Name</label>
@@ -32,6 +75,8 @@ export function BookAppointment() {
                   <input
                     type="text"
                     id="firstName"
+                    name="firstName"
+                    required
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#dee5ff] focus:border-transparent outline-none transition-all"
                     placeholder="John"
                   />
@@ -46,6 +91,8 @@ export function BookAppointment() {
                   <input
                     type="text"
                     id="lastName"
+                    name="lastName"
+                    required
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#dee5ff] focus:border-transparent outline-none transition-all"
                     placeholder="Doe"
                   />
@@ -63,6 +110,8 @@ export function BookAppointment() {
                   <input
                     type="email"
                     id="email"
+                    name="email"
+                    required
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#dee5ff] focus:border-transparent outline-none transition-all"
                     placeholder="john@example.com"
                   />
@@ -77,6 +126,8 @@ export function BookAppointment() {
                   <input
                     type="tel"
                     id="phone"
+                    name="phone"
+                    required
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#dee5ff] focus:border-transparent outline-none transition-all"
                     placeholder="07033212136"
                   />
@@ -94,6 +145,8 @@ export function BookAppointment() {
                   <input
                     type="date"
                     id="date"
+                    name="date"
+                    required
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#dee5ff] focus:border-transparent outline-none transition-all"
                   />
                 </div>
@@ -106,6 +159,8 @@ export function BookAppointment() {
                   </div>
                   <select
                     id="time"
+                    name="time"
+                    required
                     className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#dee5ff] focus:border-transparent outline-none transition-all appearance-none bg-white"
                   >
                     <option value="">Select a time</option>
@@ -125,6 +180,8 @@ export function BookAppointment() {
                 </div>
                 <select
                   id="service"
+                  name="service"
+                  required
                   className="w-full pl-11 pr-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#dee5ff] focus:border-transparent outline-none transition-all appearance-none bg-white"
                 >
                   <option value="">Select a service</option>
@@ -141,6 +198,7 @@ export function BookAppointment() {
               <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-2">Additional Notes (Optional)</label>
               <textarea
                 id="notes"
+                name="notes"
                 rows={4}
                 className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:ring-2 focus:ring-[#dee5ff] focus:border-transparent outline-none transition-all resize-none"
                 placeholder="Any specific requirements or symptoms you'd like us to know about?"
